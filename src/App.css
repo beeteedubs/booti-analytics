@@ -1,7 +1,14 @@
+/* .App {
+  text-align: center;
+} */
+
 .App {
   text-align: center;
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f8f8;
+  min-height: 100vh;
+  padding: 1rem;
 }
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -35,4 +42,60 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left h2 {
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.overview-cards {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.overview-card {
+  flex: 1;
+  background-color: #f3f6fb;
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.chart-section {
+  margin-top: 2rem;
+}
+
+.campaign-table {
+  margin-top: 2rem;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.campaign-table th,
+.campaign-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
 }

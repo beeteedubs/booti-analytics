@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, LabelList, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import OverviewCard from './overview/OverviewCard';
 
 const Dashboard = () => {
   const [chartData, setChartData] = useState([]);
+  const [missionData, setMissionsData] = useState([])
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -11,14 +13,26 @@ const Dashboard = () => {
       try {
         const response = await fetch('http://localhost:3000/api/dashboard');
         const data = await response.json();
-        console.log(data.mixpanelData);
         if (response.ok) {
-          // Transform Mixpanel data for Recharts
-          const transformedData = Object.entries(data.mixpanelData).map(([key, value]) => ({
-            name: key,
-            value: value.all,
-          }));
-          setChartData(transformedData);
+          // Transform Mixpanel data
+          const funnelData = Object.entries(data.funnels.mixpanelData).map(
+            ([key, value]) => ({
+              name: key,
+              value: value.all, // Use `value.all` for the value
+            })
+          );
+
+          // Add missions data
+          const missionData = [
+            { title: 'Total Campaigns', value: data.missions.total_campaigns },
+            { title: 'Total Drops', value: data.missions.total_drops },
+          ];
+
+          // Combine both datasets
+          const transformedData = [...missionData, ...funnelData];
+          setChartData(funnelData);
+          setMissionsData(missionData)
+          console.log(missionData)
         } else {
           setError('Error fetching Mixpanel data');
         }
@@ -35,6 +49,11 @@ const Dashboard = () => {
   return (
     <div>
       <h1>Nike Analytics Dashboard</h1>
+      <div style={{ display: 'flex', gap: '16px' }}>
+      {missionData.map((item, index) => (
+        <OverviewCard key={index} title={item.title} value={item.value} />
+      ))}
+    </div>
       {error && <p>{error}</p>}
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
