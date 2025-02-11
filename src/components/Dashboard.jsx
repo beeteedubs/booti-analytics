@@ -3,18 +3,18 @@ import { BarChart, LabelList, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Respons
 import OverviewCard from './overview/OverviewCard';
 
 const Dashboard = () => {
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState([])
   const [missionData, setMissionsData] = useState([])
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Async function to fetch data
     const fetchData = async () => {
       try {
         const response = await fetch('http://localhost:3000/api/dashboard');
         const data = await response.json();
         if (response.ok) {
-          // Transform Mixpanel data
+
           const funnelData = Object.entries(data.funnels.mixpanelData).map(
             ([key, value]) => ({
               name: key,
@@ -29,24 +29,44 @@ const Dashboard = () => {
           ];
 
           // Combine both datasets
-          const transformedData = [...missionData, ...funnelData];
+          // const transformedData = [...missionData, ...funnelData];
+
           setChartData(funnelData);
           setMissionsData(missionData)
-          console.log(missionData)
         } else {
           setError('Error fetching Mixpanel data');
         }
       } catch (err) {
         console.error('Fetch error:', err);
         setError('Error fetching Mixpanel data');
+      } finally {
+        setLoading(false);
       }
     };
 
-    // Call the fetchData function
     fetchData();
   }, []); // Empty dependency array means this runs once on mount
 
+  if (loading) return <div>Loading dashboard...</div>;
+  if (!missionData || !chartData) return <div>No data available</div>;
+
   return (
+    <div className="dashboard-container">
+      {/* HEADER SECTION */}
+      {/* <div className="header-bar">
+        <div className="header-left">
+          <h2>Dashboard</h2>
+          <p>Date Range: {dateRange}</p>
+        </div>
+        <div className="header-right">
+          <p>Fresh Data In: {freshDataIn}</p>
+          <p>{userName} ({userAccess})</p>
+          <button>Settings</button>
+          <button>Support</button>
+        </div>
+      </div> */}
+    {/* <Overview overview={overview} /> */}
+
     <div>
       <h1>Nike Analytics Dashboard</h1>
       <div style={{ display: 'flex', gap: '16px' }}>
@@ -66,6 +86,7 @@ const Dashboard = () => {
           </Bar>
         </BarChart>
       </ResponsiveContainer>
+    </div>
     </div>
   );
 };
